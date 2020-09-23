@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef OPEN_SPIEL_GAMES_FPSBA_H_
-#define OPEN_SPIEL_GAMES_FPSBA_H_
+#ifndef OPEN_SPIEL_GAMES_NewAuction_H_
+#define OPEN_SPIEL_GAMES_NewAuction_H_
 
 #include <array>
 #include <map>
@@ -43,10 +43,10 @@ inline constexpr int kDefaultPlayers = 4;
 inline constexpr int kDefaultMaxValue = 10;
 
 // State of an in-play game.
-class FPSBAState : public State {
+class NewAuctionState : public State {
  public:
-  FPSBAState(std::shared_ptr<const Game> game);
-  FPSBAState(const FPSBAState& other) = default;
+  NewAuctionState(std::shared_ptr<const Game> game);
+  NewAuctionStatee(const NewAuctionState& other) = default;
 
   Player CurrentPlayer() const override;
   std::vector<Action> LegalActions() const override;
@@ -75,12 +75,12 @@ class FPSBAState : public State {
 };
 
 // Game object.
-class FPSBAGame : public Game {
+class NewAuctionGame : public Game {
  public:
-  explicit FPSBAGame(const GameParameters& params);
+  explicit NewAuctionGame(const GameParameters& params);
   int NumDistinctActions() const override { return max_value_; }
   std::unique_ptr<State> NewInitialState() const override {
-    return std::unique_ptr<State>(new FPSBAState(shared_from_this()));
+    return std::unique_ptr<State>(new NewAuctionState(shared_from_this()));
   }
   int MaxChanceOutcomes() const override {
     return std::max(max_value_ + 1, num_players_);
@@ -89,7 +89,7 @@ class FPSBAGame : public Game {
   double MinUtility() const override { return 0; }
   double MaxUtility() const override { return max_value_; }
   std::shared_ptr<const Game> Clone() const override {
-    return std::shared_ptr<const Game>(new FPSBAGame(*this));
+    return std::shared_ptr<const Game>(new NewAuctionGame(*this));
   }
   int MaxGameLength() const override { return num_players_; }
   std::vector<int> InformationStateTensorShape() const override {
@@ -109,4 +109,4 @@ class FPSBAGame : public Game {
 }  // namespace new_auction
 }  // namespace open_spiel
 
-#endif  // OPEN_SPIEL_GAMES_FPSBA_H_
+#endif  // OPEN_SPIEL_GAMES_NewAuction_H_

@@ -43,28 +43,28 @@ const GameType kGameType{/*short_name=*/"new_auction",
                          }};
 
 std::shared_ptr<const Game> Factory(const GameParameters& params) {
-  return std::shared_ptr<const Game>(new FPSBAGame(params));
+  return std::shared_ptr<const Game>(new NewAuctionGame(params));
 }
 
 REGISTER_SPIEL_GAME(kGameType, Factory);
 }  // namespace
 
-FPSBAGame::FPSBAGame(const GameParameters& params)
+NewAuctionGame::NewAuctionGame(const GameParameters& params)
     : Game(kGameType, params),
       num_players_(ParameterValue<int>("players")),
       max_value_(ParameterValue<int>("max_value")) {}
 
-FPSBAState::FPSBAState(std::shared_ptr<const Game> game)
+NewAuctionState::NewAuctionState(std::shared_ptr<const Game> game)
     : State(game), max_value_(game->NumDistinctActions()) {}
 
-int FPSBAState::CurrentPlayer() const {
+int NewAuctionState::CurrentPlayer() const {
   if (valuations_.size() < num_players_) return kChancePlayerId;
   if (bids_.size() < num_players_) return bids_.size();
   if (winner_ == kInvalidPlayer) return kChancePlayerId;
   return kTerminalPlayerId;
 }
 
-std::vector<Action> FPSBAState::EligibleWinners() const {
+std::vector<Action> NewAuctionState::EligibleWinners() const {
   int max_bid = *std::max_element(bids_.begin(), bids_.end());
   std::vector<Action> eligibles;
   for (auto player = Player{0}; player < num_players_; player++) {
@@ -75,7 +75,7 @@ std::vector<Action> FPSBAState::EligibleWinners() const {
   return eligibles;
 }
 
-std::vector<Action> FPSBAState::LegalActions() const {
+std::vector<Action> NewAuctionState::LegalActions() const {
   if (valuations_.size() < num_players_) {
     std::vector<Action> values(max_value_);
     std::iota(values.begin(), values.end(), 1);
@@ -92,7 +92,7 @@ std::vector<Action> FPSBAState::LegalActions() const {
   return {};
 }
 
-std::string FPSBAState::ActionToString(Player player, Action action_id) const {
+std::string NewAuctionState::ActionToString(Player player, Action action_id) const {
   if (player != kChancePlayerId) {
     return absl::StrCat("Player ", player, " bid: ", action_id);
   } else if (valuations_.size() < num_players_) {
@@ -102,15 +102,15 @@ std::string FPSBAState::ActionToString(Player player, Action action_id) const {
   }
 }
 
-std::string FPSBAState::ToString() const {
+std::string NewAuctionState::ToString() const {
   return absl::StrCat(
       absl::StrJoin(valuations_, ","), ";", absl::StrJoin(bids_, ","),
       winner_ == kInvalidPlayer ? "" : absl::StrCat(";", winner_));
 }
 
-bool FPSBAState::IsTerminal() const { return winner_ != kInvalidPlayer; }
+bool NewAuctionState::IsTerminal() const { return winner_ != kInvalidPlayer; }
 
-std::vector<double> FPSBAState::Returns() const {
+std::vector<double> NewAuctionState::Returns() const {
   std::vector<double> returns(num_players_);
   if (winner_ != kInvalidPlayer) {
     returns[winner_] = valuations_[winner_] - bids_[winner_];
@@ -118,11 +118,11 @@ std::vector<double> FPSBAState::Returns() const {
   return returns;
 }
 
-std::unique_ptr<State> FPSBAState::Clone() const {
-  return std::unique_ptr<State>(new FPSBAState(*this));
+std::unique_ptr<State> NewAuctionState::Clone() const {
+  return std::unique_ptr<State>(new NewAuctionState(*this));
 }
 
-void FPSBAState::DoApplyAction(Action action_id) {
+void NewAuctionState::DoApplyAction(Action action_id) {
   if (valuations_.size() < num_players_) {
     valuations_.push_back(action_id);
   } else if (bids_.size() < num_players_) {
@@ -135,7 +135,7 @@ void FPSBAState::DoApplyAction(Action action_id) {
   }
 }
 
-std::string FPSBAState::InformationStateString(Player player) const {
+std::string NewAuctionState::InformationStateString(Player player) const {
   SPIEL_CHECK_GE(player, 0);
   SPIEL_CHECK_LT(player, num_players_);
   if (valuations_.size() <= player) return absl::StrCat("p", player);
@@ -145,7 +145,7 @@ std::string FPSBAState::InformationStateString(Player player) const {
                       bids_[player]);
 }
 
-void FPSBAState::InformationStateTensor(Player player,
+void NewAuctionState::InformationStateTensor(Player player,
                                         absl::Span<float> values) const {
   SPIEL_CHECK_GE(player, 0);
   SPIEL_CHECK_LT(player, num_players_);
@@ -165,14 +165,14 @@ void FPSBAState::InformationStateTensor(Player player,
   SPIEL_CHECK_EQ(cursor - values.begin(), values.size());
 }
 
-std::string FPSBAState::ObservationString(Player player) const {
+std::string NewAuctionState::ObservationString(Player player) const {
   SPIEL_CHECK_GE(player, 0);
   SPIEL_CHECK_LT(player, num_players_);
   if (valuations_.size() <= player) return "";
   return absl::StrCat(valuations_[player]);
 }
 
-void FPSBAState::ObservationTensor(Player player,
+void NewAuctionState::ObservationTensor(Player player,
                                    absl::Span<float> values) const {
   SPIEL_CHECK_GE(player, 0);
   SPIEL_CHECK_LT(player, num_players_);
@@ -183,7 +183,7 @@ void FPSBAState::ObservationTensor(Player player,
   }
 }
 
-ActionsAndProbs FPSBAState::ChanceOutcomes() const {
+ActionsAndProbs NewAuctionState::ChanceOutcomes() const {
   ActionsAndProbs valuesAndProbs;
   if (valuations_.size() < num_players_) {
     for (int i = 1; i <= max_value_; i++) {

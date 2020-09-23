@@ -24,7 +24,7 @@ namespace {
 
 namespace testing = open_spiel::testing;
 
-void BasicFPSBATests(const GameParameters& params) {
+void BasicNewAuctionTests(const GameParameters& params) {
   testing::LoadGameTest("new_auction");
   testing::ChanceOutcomesTest(*LoadGame("new_auction", params));
   testing::RandomSimTest(*LoadGame("new_auction", params), 100);
@@ -33,7 +33,7 @@ void BasicFPSBATests(const GameParameters& params) {
 
 void TieBreak() {
   std::shared_ptr<const Game> game = LoadGame(
-      "first_sealed_auction", {{"players", open_spiel::GameParameter(3)},
+      "new_auction", {{"players", open_spiel::GameParameter(3)},
                                {"max_value", open_spiel::GameParameter(5)}});
   std::vector<int64_t> action({1, 2, 3, 4, 5});
   auto state = game->NewInitialState();
@@ -59,14 +59,14 @@ void TieBreak() {
 }  // namespace open_spiel
 
 int main(int argc, char** argv) {
-  open_spiel::new_auction::BasicFPSBATests({});
-  open_spiel::new_auction::BasicFPSBATests(
+  open_spiel::new_auction::BasicNewAuctionTests({});
+  open_spiel::new_auction::BasicNewAuctionTests(
       {{"players", open_spiel::GameParameter(1)},
        {"max_value", open_spiel::GameParameter(1)}});
-  open_spiel::new_auction::BasicFPSBATests(
+  open_spiel::new_auction::BasicNewAuctionTests(
       {{"players", open_spiel::GameParameter(10)},
        {"max_value", open_spiel::GameParameter(2)}});
-  open_spiel::new_auction::BasicFPSBATests(
+  open_spiel::new_auction::BasicNewAuctionTests(
       {{"players", open_spiel::GameParameter(2)},
        {"max_value", open_spiel::GameParameter(40)}});
   open_spiel::new_auction::TieBreak();
