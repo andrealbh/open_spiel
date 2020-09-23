@@ -33,7 +33,7 @@ void BasicFPSBATests(const GameParameters& params) {
 
 void TieBreak() {
   std::shared_ptr<const Game> game = LoadGame(
-      "first_sealed_auction", {{"players", open_spiel::GameParameter(3)},
+      "new_auction", {{"players", open_spiel::GameParameter(3)},
                                {"max_value", open_spiel::GameParameter(5)}});
   std::vector<int64_t> action({1, 2, 3, 4, 5});
   auto state = game->NewInitialState();
