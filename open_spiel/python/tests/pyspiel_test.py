@@ -49,6 +49,7 @@ class PyspielTest(absltest.TestCase):
         "coordinated_mp",
         "cursor_go",
         "deep_sea",
+        "double_toe"
         "efg_game",
         "first_sealed_auction",
         "gin_rummy",
@@ -74,7 +75,7 @@ class PyspielTest(absltest.TestCase):
         "matrix_shapleys_game",
         "misere",
         "negotiation",
-        "nfg_game",
+        "new_auction",
         "normal_form_extensive_game",
         "oshi_zumo",
         "othello",
@@ -83,10 +84,8 @@ class PyspielTest(absltest.TestCase):
         "phantom_ttt",
         "pig",
         "quoridor",
-        "repeated_game",
         "skat",
-        "start_at",
-        "solitaire",
+        "stones_and_gems",
         "tic_tac_toe",
         "tiny_bridge_2p",
         "tiny_bridge_4p",
@@ -123,8 +122,6 @@ class PyspielTest(absltest.TestCase):
         "misere",
         "turn_based_simultaneous_game",
         "normal_form_extensive_game",
-        "repeated_game",
-        "start_at",
     ]
     self.assertCountEqual(games_with_mandatory_parameters, expected)
 
